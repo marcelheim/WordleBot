@@ -33,7 +33,7 @@ const readConfig = async () => {
 }
 const writeConfig = (config: Config) => browser.storage.local.set(config)
 
-const refreshBoard = () => {
+const refreshBoard = async () => {
     let rows = document.querySelector('game-app').shadowRoot.querySelector('#board').querySelectorAll('game-row')
     let tiles: [Tile?] = []
     rows.forEach(r => r.shadowRoot.querySelectorAll('game-tile').forEach(t => {
@@ -49,23 +49,23 @@ const refreshBoard = () => {
     board.tiles = tiles
 }
 
-const typeWord = (word) => {
-    clearWord()
+const typeWord = async (word) => {
+    await clearWord()
     for (let i = 0; i < word.length; i++) {
         window.dispatchEvent(new KeyboardEvent('keydown', {'key': word.charAt(i)}))
     }
 }
-const submitWord = () => {
+const submitWord = async () => {
     window.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Enter'}))
 }
-const clearWord = () => {
+const clearWord = async () => {
     for (let i = 0; i < board.width; i++) {
         window.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Backspace'}))
     }
 }
 
 const getWordList = async () => {
-    refreshBoard()
+    await refreshBoard()
     console.log(board)
     let res = await fetch(config.url, {
         method: 'post',
@@ -81,7 +81,7 @@ const getWordList = async () => {
 }
 
 const guessWord = async () => {
-    typeWord(guesses[guessCounter % guesses.length].value)
+    await typeWord(guesses[guessCounter % guesses.length].value)
     let rand = guessCounter
     while(rand == guessCounter){
         rand = Math.floor(Math.random() * guesses.length)
@@ -93,9 +93,9 @@ browser.runtime.onMessage.addListener(async (message) => {
     if (message.command === 'typeWord') typeWord(message['word'])
     else if(message.command === 'submitWord') submitWord()
     else if(message.command === 'clearWord') clearWord()
-    else if(message.command === 'refreshConfig') await readConfig()
-    else if(message.command === 'fetchWords') await getWordList()
-    else if(message.command === 'guessWord') await guessWord()
+    else if(message.command === 'refreshConfig') readConfig()
+    else if(message.command === 'fetchWords') getWordList()
+    else if(message.command === 'guessWord') guessWord()
 });
 
 window.addEventListener('load', async () => {
