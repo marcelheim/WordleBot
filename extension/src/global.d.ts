@@ -1,22 +1,16 @@
 /// <reference types="svelte" />
 
-enum Evaluation {
-    Absent,
-    Present,
-    Correct
-}
-
 type Tile = {
-    Letter: string,
-    Evaluation: Evaluation
+    letter: string,
+    evaluation: Evaluation
 }
 
 type BoardMatrix = {
-    Width: number,
-    Height: number,
-    Tiles: [Tile?]
+    width: number,
+    height: number,
+    tiles: [Tile?]
 }
 
 type Config = {
-    Url: string
+    url: string
 }

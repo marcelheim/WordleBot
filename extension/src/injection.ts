@@ -1,14 +1,18 @@
 import browser from "webextension-polyfill";
 
 let board: BoardMatrix = {
-    Height: undefined,
-    Width: undefined,
-    Tiles: []
+    height: undefined,
+    width: undefined,
+    tiles: []
 }
 
 let config: Config = {
-    Url: undefined
+    url: undefined
 }
+
+let guesses = []
+
+let guessCounter = 0
 
 const getEvaluationAsEnum = (evaluation: string) => {
     switch (evaluation) {
@@ -23,7 +27,10 @@ const getEvaluationAsEnum = (evaluation: string) => {
     }
 }
 
-const readConfig = async () => config = (await browser.storage.local.get('config')).config
+const readConfig = async () => {
+    config = (await browser.storage.local.get('config')).config
+    getWordList()
+}
 const writeConfig = (config: Config) => browser.storage.local.set(config)
 
 const refreshBoard = () => {
@@ -32,14 +39,14 @@ const refreshBoard = () => {
     rows.forEach(r => r.shadowRoot.querySelectorAll('game-tile').forEach(t => {
         if(!t.attributes['evaluation']) return
         tiles.push({
-            Letter: t.attributes['letter'].value,
-            Evaluation: getEvaluationAsEnum(t.attributes['evaluation'].value)
+            letter: t.attributes['letter'].value,
+            evaluation: getEvaluationAsEnum(t.attributes['evaluation'].value)
         })
     }))
     
-    board.Height = rows.length
-    board.Width =  Number(rows[0].attributes[1].value)
-    board.Tiles = tiles
+    board.height = rows.length
+    board.width =  Number(rows[0].attributes.getNamedItem('length').nodeValue)
+    board.tiles = tiles
 }
 
 const typeWord = (word) => {
@@ -52,26 +59,34 @@ const submitWord = () => {
     window.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Enter'}))
 }
 const clearWord = () => {
-    for (let i = 0; i < board.Width; i++) {
+    for (let i = 0; i < board.width; i++) {
         window.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Backspace'}))
     }
 }
 
 const getWordList = async () => {
-    /*let url = config.Url + '?' + new URLSearchParams({
-        Width: board.Width.toString(),
-        Height: board.Height.toString()
-    })
-    board.Tiles.forEach(t => {
-        url += '&' + new URLSearchParams({
-            Tiles: JSON.stringify(t)
-        })
-    })
-    console.log(url)*/
-    fetch(config.Url, {
+    refreshBoard()
+    console.log(board)
+    let res = await fetch(config.url, {
         method: 'post',
-        body: JSON.stringify(board, (key, value) => value)
+        body: JSON.stringify(board, (key, value) => value),
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
+
+    let words = await res.json()
+
+    guesses = words
+}
+
+const guessWord = async () => {
+    typeWord(guesses[guessCounter % guesses.length].value)
+    let rand = guessCounter
+    while(rand == guessCounter){
+        rand = Math.floor(Math.random() * guesses.length)
+    }
+    guessCounter = rand
 }
 
 browser.runtime.onMessage.addListener(async (message) => {
@@ -80,16 +95,15 @@ browser.runtime.onMessage.addListener(async (message) => {
     else if(message.command === 'clearWord') clearWord()
     else if(message.command === 'refreshConfig') await readConfig()
     else if(message.command === 'fetchWords') await getWordList()
-    console.log(config)
+    else if(message.command === 'guessWord') await guessWord()
 });
 
 window.addEventListener('load', async () => {
     console.log('injected')
     await readConfig()
-    refreshBoard()
 })
 
-/*
-window.addEventListener('keydown', e => {
-    refreshBoard()
-})*/
+window.addEventListener('keydown',async (e) => {
+    if (e.key == 'Enter') getWordList()
+    else if(e.key == '.') guessWord()
+})

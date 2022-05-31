@@ -1,6 +1,6 @@
 <script lang="ts">
 	import browser from "webextension-polyfill";
-	let url = "https://localhost:7061/api/solver";
+	let url = "http://localhost:7777/solver";
 	
 	const handleCommand = (command) => {
 		browser.tabs.query({
@@ -12,22 +12,26 @@
 			}
 		})
 	}
+	const readConfig = async () => {
+		let config: Config = (await browser.storage.local.get('config')).config
+		if(config) url = config.url || url
+	}
 	const writeConfig = async (config: Config) => await browser.storage.local.set({ config: config })
 	const updateConfig = async (config: Config) => {
 		await writeConfig(config)
 		handleCommand({ command: 'refreshConfig' })
 	}
 	
+	readConfig()
 </script>
 
 <main>
-	<h1>{url}</h1>
 	<input bind:value={url}>
-	<button on:click={x => updateConfig({ Url: url })}>
-		Submit
+	<button on:click={x => updateConfig({ url: url })}>
+		Save Config
 	</button>
-	<button on:click={x => handleCommand({command: 'fetchWords'})}>
-		Fetch Words
+	<button on:click={x => handleCommand({command: 'guessWord'})}>
+		Guess
 	</button>
 </main>
 

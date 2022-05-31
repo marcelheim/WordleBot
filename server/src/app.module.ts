@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { WordModule } from './word/word.module';
 import { ManagementModule } from './management/management.module';
+import { SolverModule } from './solver/solver.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ManagementModule } from './management/management.module';
     AuthModule,
     WordModule,
     ManagementModule,
+    SolverModule,
   ],
   controllers: [AppController],
   providers: [AppService],

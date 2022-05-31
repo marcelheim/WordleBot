@@ -6,8 +6,8 @@ let words = []
 
 allFileContents.split(/\r?\n/).forEach(line =>  {
     words.push({
-        Value: line,
-        Length: line.length
+        value: line,
+        length: line.length
     })
 })
 
