@@ -9,10 +9,13 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { WordDTO } from 'src/word/word.dto';
 import { WordService } from 'src/word/word.service';
 
+@ApiTags('management')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('management')
 export class ManagementController {
