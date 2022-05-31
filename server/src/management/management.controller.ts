@@ -7,10 +7,13 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { WordDTO } from 'src/word/word.dto';
 import { WordService } from 'src/word/word.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('management')
 export class ManagementController {
   constructor(private readonly wordService: WordService) {}
