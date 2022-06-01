@@ -10,6 +10,8 @@
 !includeurl ICONURL/font-awesome-5/server.puml
 !includeurl ICONURL/devicons2/mongodb.puml
 
+skinparam dpi 250
+
 LAYOUT_WITH_LEGEND()
 
 Person(user, "User", $sprite="user")
@@ -21,7 +23,7 @@ System_Boundary(wordlebot, "WordleBot"){
     Container(browser_ext, "Browser Extension", "Svelte + JS", $sprite="firefox_browser")
     Container(spa, "SPA", "Svelte", $sprite="firefox_browser")
     ContainerDb(db, "Database", "MongoDB", $sprite="mongodb")
-    Container(server, "Server", "ASP.NET", $sprite="server")
+    Container(server, "Server", "nest.js", $sprite="server")
     Rel(browser_ext, server, "Calls Solver API", "HTTPS / WebSocket")
     Rel(spa, server, "Calls Management API", "HTTPS")
     Rel(server, db, "Reads and writes data")

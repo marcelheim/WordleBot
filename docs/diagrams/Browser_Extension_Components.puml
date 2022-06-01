@@ -10,11 +10,13 @@
 !includeurl ICONURL/font-awesome-5/server.puml
 !includeurl ICONURL/devicons2/mongodb.puml
 
+skinparam dpi 250
+
 LAYOUT_WITH_LEGEND()
 
 Person(user, "User", $sprite="user")
 
-Container(server, "Server", "ASP.NET", $sprite="server")
+Container(server, "Server", "nest.js", $sprite="server")
 
 System_Ext(wordle, 'Wordle', $sprite='gamepad')
 

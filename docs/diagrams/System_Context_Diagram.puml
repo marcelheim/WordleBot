@@ -8,6 +8,8 @@
 !includeurl ICONURL/font-awesome-5/gamepad.puml
 !includeurl ICONURL/devicons2/mongodb.puml
 
+skinparam dpi 250
+
 LAYOUT_WITH_LEGEND()
 
 Person(user, "User", $sprite="user")
