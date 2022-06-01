@@ -1,1 +1,1 @@
-![WordleBot](/docs/images/wordlebot_social.png)
+![WordleBot](/docs/images/wordlebot_social_transparent.png)
