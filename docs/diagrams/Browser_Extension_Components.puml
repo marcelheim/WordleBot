@@ -28,5 +28,5 @@ Container_Boundary(browser_ext1, "Browser Extension"){
 
 Rel_L(user, ui, "Uses")
 Rel(injection, wordle, "Automates")
-Rel(injection, server, "Calls Solver API", "HTTPS / WebSocket")
+Rel(injection, server, "Calls Solver API", "HTTP")
 @enduml

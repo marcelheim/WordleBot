@@ -24,8 +24,8 @@ System_Boundary(wordlebot, "WordleBot"){
     Container(spa, "SPA", "Svelte", $sprite="firefox_browser")
     ContainerDb(db, "Database", "MongoDB", $sprite="mongodb")
     Container(server, "Server", "nest.js", $sprite="server")
-    Rel(browser_ext, server, "Calls Solver API", "HTTPS / WebSocket")
-    Rel(spa, server, "Calls Management API", "HTTPS")
+    Rel(browser_ext, server, "Calls Solver API", "HTTP")
+    Rel(spa, server, "Calls Management API", "HTTP")
     Rel(server, db, "Reads and writes data")
 }
 
